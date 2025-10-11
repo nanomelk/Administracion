@@ -21,5 +21,427 @@
             margin: 0;
             overflow: hidden; /* Evita scrollbar global */
             display: grid; /* Para centrar el contenido principal */
+            place-items: center;
+            min-height: 100vh;
+            padding: 0;
+            background: black; /* Fondo negro base para la animación Matrix */
+        }
 
-            
+        /* === Estilos para el Fondo de Estrellas Dinámicas === */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Asegura que esté siempre en el fondo */
+            overflow: hidden;
+            background-color: transparent;
+        }
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: var(--opacity); transform: scale(1); }
+        }
+
+        /* === Estilos para la Sección de Introducción Matrix === */
+        #matrix-intro {
+            position: absolute; /* Ocupa toda la pantalla */
+            inset: 0;
+            z-index: 20; /* Por encima del canvas del Matrix */
+            background-color: transparent; /* El canvas ya provee el fondo visual */
+            display: flex; /* Para centrar contenido */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centra el contenido verticalmente */
+            padding: 24px;
+        }
+
+        /* Estilos del canvas Matrix dentro de la intro */
+        #matrixCanvas {
+            position: absolute;
+            inset: 0;
+            z-index: 0; /* Fondo del Matrix intro */
+        }
+
+        /* Título y Subtítulo de la intro (ajustados para flexbox) */
+        .intro-title {
+            color: #00FF00; /* Color verde */
+            font-size: 3rem; /* Tamaño */
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .intro-subtitle {
+            color: #FFFFFF; /* Color blanco */
+            font-size: 1.5rem; /* Tamaño */
+            z-index: 10;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+
+        /* Estilos para el botón de continuar (ajustado para flexbox) */
+        #continue-button {
+            background-color: rgba(0, 128, 0, 0.8); /* Verde con transparencia */
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.125rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        #continue-button:hover {
+            background-color: rgba(0, 128, 0, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+        }
+        #continue-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Eliminamos los estilos para .intro-image ya que las imágenes de los logos han sido removidas */
+
+        /* === Contenedor para la imagen de RRHH y el enlace del TP === */
+        #content-area {
+            display: none; /* Controlado por JS para mostrar/ocultar */
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            z-index: 30; /* Por encima de la intro Matrix y las estrellas */
+            background-color: var(--bg); /* Fondo sobre las estrellas */
+            display: flex; /* Para centrar el contenido */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: absolute; /* Para que tome el control de la pantalla */
+            top: 0;
+            left: 0;
+        }
+
+        /* Estilos específicos para la imagen de RRHH */
+        #hr-welcome-image {
+            animation: pulse-fade 2s infinite alternate; /* Animación para la imagen */
+            width: 100%; /* Ocupa el 100% del ancho del contenedor disponible */
+            max-width: 900px; /* Tamaño máximo para que no sea excesivamente grande en pantallas muy anchas */
+            height: auto; /* Mantiene la proporción de la imagen */
+            object-fit: contain; /* Asegura que la imagen se ajuste sin cortarse */
+            margin-bottom: 2rem; /* Más espacio debajo de la imagen */
+        }
+        @keyframes pulse-fade {
+            0% { opacity: 0.8; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Estilos para el texto neón */
+        .neon-text {
+            text-shadow: 0 0 5px #00f7ff, 0 0 10px #00f7ff;
+        }
+
+        /* Nuevo estilo para el fondo del enlace del TP */
+        #tp-link-display {
+            background-image: url('https://i.postimg.cc/3RvPJjFY/Whats-App-Image-2025-08-17-at-2-48-52-PM.jpg'); /* Tu nueva imagen de fondo */
+            background-size: cover; /* Cubre todo el elemento */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que se repita */
+            position: relative; /* Necesario para el overlay */
+            width: 100%; /* Ocupa todo el ancho de su padre */
+            height: 100%; /* Ocupa toda la altura de su padre (que es 100vh) */
+            padding: 24px;
+            border-radius: 20px; /* Bordes redondeados */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra para el efecto flotante */
+            display: flex; /* Asegura el centrado de su contenido */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        /* Overlay para hacer el texto legible sobre la imagen de fondo */
+        #tp-link-display::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* Capa oscura semitransparente */
+            border-radius: 20px;
+            z-index: 1;
+        }
+        #tp-link-display > * {
+            position: relative; /* Asegura que el contenido esté sobre el overlay */
+            z-index: 2;
+        }
+
+    </style>
+</head>
+<body class="bg-black">
+
+    <!-- Sección de Introducción con Efecto Matrix -->
+    <div id="matrix-intro">
+        <!-- Canvas para el efecto Matrix -->
+        <canvas id="matrixCanvas" class="absolute inset-0"></canvas>
+
+        <!-- Contenido sobre el canvas Matrix -->
+        <div class="relative z-10 p-4 flex flex-col items-center justify-center h-full w-full">
+            <!-- Los logos "Logo CBA" y "Robot IA" han sido eliminados de aquí. -->
+
+            <h1 class="intro-title">CBA Consulting</h1>
+            <p class="intro-subtitle">Innovación en el mundo digital</p>
+
+            <button id="continue-button">Haz clic para continuar</button>
+        </div>
+    </div>
+
+    <!-- Fondo de estrellas dinámicas (persistente para ambas pantallas) -->
+    <div class="stars-container" id="stars-container"></div>
+
+    <!-- Contenedor principal para la imagen de RRHH y el enlace del TP -->
+    <div id="content-area" class="relative z-10 flex flex-col items-center justify-center">
+        <!-- Div para mostrar la imagen y el mensaje de bienvenida de RRHH -->
+        <div id="image-display-area" class="flex flex-col items-center justify-center p-4" style="display: none;">
+            <!-- IMAGEN DE RRHH CARGADA POR EL USUARIO -->
+            <img id="hr-welcome-image" src="https://i.postimg.cc/vcsJp4Vb/Agregar-un-subt-tulo.jpg"
+                 alt="Bienvenido Recursos Humanos"
+                 class="rounded-lg shadow-lg border-2 border-green-500"
+                 onerror="this.onerror=null;this.src='https://placehold.co/800x400/4CAF50/FFFFFF?text=Imagen+RRHH+no+disponible';"
+            >
+            <h2 class="text-3xl font-bold text-green-400 mb-4 neon-text text-center mt-6">¡Bienvenido/a al Área de Recursos Humanos!</h2>
+            <p class="text-lg text-gray-300 text-center">Redirigiendo al Trabajo Práctico...</p>
+        </div>
+
+        <!-- Div para mostrar el enlace del Trabajo Práctico -->
+        <div id="tp-link-display" class="flex flex-col items-center justify-center p-4" style="display: none;">
+            <h2 class="text-3xl font-bold text-cyan-400 mb-4 neon-text">¡Acceso Concedido! ✨</h2>
+            <p class="text-lg text-gray-300 text-center mb-6">Aquí tienes el enlace al ABP DE ADMINISTRACIÓN DE RRHH</p>
+            <a id="tp-link" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105">
+                VER ABP DE RRHH
+            </a>
+            <p class="text-sm text-gray-400 mt-4 text-center max-w-sm">
+                ⚠️ Este enlace es dinámico y puede sufrir modificaciones. Se actualizará constantemente.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // === Elementos del DOM ===
+        const matrixIntroSection = document.getElementById('matrix-intro');
+        const continueButton = document.getElementById('continue-button');
+        const contentArea = document.getElementById('content-area');
+        const imageDisplayArea = document.getElementById('image-display-area');
+        const tpLinkDisplay = document.getElementById('tp-link-display');
+        const tpLink = document.getElementById('tp-link');
+
+        // === Lógica y Canvas del Efecto Matrix ===
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const ctxMatrix = matrixCanvas.getContext('2d'); 
+
+        let widthMatrix, heightMatrix;
+        const charactersMatrix = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^&*()_+-=[]{}|;:,.<>/?`~';
+        const fontSizeMatrix = 16;
+        let columnsMatrix;
+        let dropsMatrix = [];
+
+        const buildingsMatrix = [];
+        const buildingWidthMatrix = 80; 
+        let numBuildingsMatrix; 
+
+        const windowStatesMatrix = [];
+        let currentColorIndexMatrix = 0;
+        const colorSequenceMatrix = ['#FFEB3B', '#03A9F4', '#FF9800', '#FFFFFF']; 
+
+        function getRandomColorMatrix() {
+            const colors = ['#FFFFFF', '#808080', '#FFEB3B', '#FF9800', '#03A9F4', '#000000']; 
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function initializeWindowStatesMatrix() {
+            windowStatesMatrix.length = 0; 
+            buildingsMatrix.forEach(building => {
+                const windowWidth = 10;
+                const windowHeight = 20;
+                const numWindowsX = Math.floor(building.width / (windowWidth + 5));
+                const numWindowsY = Math.floor(building.height / (windowHeight + 10));
+                const buildingWindows = [];
+
+                for (let i = 0; i < numWindowsX; i++) {
+                    for (let j = 0; j < numWindowsY; j++) {
+                        const color = getRandomColorMatrix(); 
+                        buildingWindows.push({
+                            color: color,
+                            isOn: false,
+                            timer: null
+                        });
+                    }
+                }
+                windowStatesMatrix.push(buildingWindows);
+            });
+        }
+
+        function updateWindowStatesMatrix() {
+            windowStatesMatrix.forEach(buildingWindows => {
+                buildingWindows.forEach(window => {
+                    window.isOn = false; 
+                });
+            });
+
+            const currentColor = colorSequenceMatrix[currentColorIndexMatrix];
+            windowStatesMatrix.forEach(buildingWindows => {
+                buildingWindows.forEach(window => {
+                    if (window.color === currentColor || window.color === '#808080' || window.color === '#000000') {
+                        window.isOn = true; 
+                    }
+                });
+            });
+
+            currentColorIndexMatrix = (currentColorIndexMatrix + 1) % colorSequenceMatrix.length;
+        }
+
+        function drawBuildingsMatrix() {
+            ctxMatrix.fillStyle = '#111'; 
+            ctxMatrix.fillRect(0, 0, widthMatrix, heightMatrix); 
+            ctxMatrix.strokeStyle = '#FFF'; 
+            ctxMatrix.lineWidth = 2;
+
+            buildingsMatrix.forEach((building, buildingIndex) => {
+                ctxMatrix.strokeRect(building.x, heightMatrix - building.height, building.width, building.height);
+                const windowWidth = 10;
+                const windowHeight = 20;
+                const numWindowsX = Math.floor(building.width / (windowWidth + 5));
+                const numWindowsY = Math.floor(building.height / (windowHeight + 10));
+
+                for (let i = 0; i < numWindowsX; i++) {
+                    for (let j = 0; j < numWindowsY; j++) {
+                        const windowX = building.x + i * (windowWidth + 5) + 5;
+                        const windowY = heightMatrix - building.height + j * (windowHeight + 10) + 5;
+
+                        if (windowStatesMatrix[buildingIndex] && windowStatesMatrix[buildingIndex][i * numWindowsY + j]) {
+                            const window = windowStatesMatrix[buildingIndex][i * numWindowsY + j];
+                            ctxMatrix.fillStyle = window.isOn ? window.color : '#000000'; 
+                            ctxMatrix.fillRect(windowX, windowY, windowWidth, windowHeight);
+                        }
+                    }
+                }
+            });
+        }
+
+        function resizeMatrixCanvas() {
+            widthMatrix = matrixCanvas.width = window.innerWidth;
+            heightMatrix = matrixCanvas.height = window.innerHeight;
+            columnsMatrix = Math.floor(widthMatrix / fontSizeMatrix);
+            dropsMatrix = Array(columnsMatrix).fill(0);
+
+            buildingsMatrix.length = 0; 
+            numBuildingsMatrix = Math.ceil(widthMatrix / buildingWidthMatrix); 
+            for (let i = 0; i < numBuildingsMatrix; i++) {
+                const height = Math.random() * 200 + 100; 
+                buildingsMatrix.push({ x: i * buildingWidthMatrix, width: buildingWidthMatrix, height: height });
+            }
+            initializeWindowStatesMatrix(); 
+            drawBuildingsMatrix(); 
+        }
+
+        function drawMatrixEffect() {
+            ctxMatrix.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
+            ctxMatrix.fillRect(0, 0, widthMatrix, heightMatrix);
+
+            drawBuildingsMatrix(); 
+
+            ctxMatrix.font = `${fontSizeMatrix}px monospace`;
+
+            for (let i = 0; i < dropsMatrix.length; i++) {
+                const text = charactersMatrix.charAt(Math.floor(Math.random() * charactersMatrix.length));
+                ctxMatrix.fillStyle = Math.random() < 0.1 ? '#00F' : '#0F0'; 
+                ctxMatrix.fillText(text, i * fontSizeMatrix, dropsMatrix[i] * fontSizeMatrix);
+
+                if (dropsMatrix[i] * fontSizeMatrix > heightMatrix && Math.random() > 0.975) {
+                    dropsMatrix[i] = 0;
+                }
+
+                dropsMatrix[i]++;
+            }
+        }
+
+        let matrixAnimationId;
+        function animateMatrix() {
+            updateWindowStatesMatrix(); 
+            drawMatrixEffect(); 
+            matrixAnimationId = requestAnimationFrame(animateMatrix); 
+        }
+
+        // === Lógica y Eventos de Transición ===
+        continueButton.addEventListener('click', () => {
+            cancelAnimationFrame(matrixAnimationId); 
+            matrixIntroSection.style.display = 'none'; 
+
+            contentArea.style.display = 'flex'; 
+            showWelcomeImageAndRedirectToTP(); 
+        });
+
+        // === Lógica y Canvas del Fondo de Estrellas ===
+        const starsContainer = document.getElementById('stars-container');
+        function createStars() {
+            const starCount = 100;
+            const containerWidth = starsContainer.offsetWidth;
+            const containerHeight = starsContainer.offsetWidth; /* Usar width para la altura también */
+
+            starsContainer.innerHTML = ''; 
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                star.style.left = `${Math.random() * containerWidth}px`;
+                star.style.top = `${Math.random() * containerHeight}px`;
+
+                star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+                star.style.setProperty('--opacity', Math.random() * 0.7 + 0.3);
+
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // URL del trabajo práctico (ya configurado)
+        const trabajoPracticoURL = "https://docs.google.com/document/d/1Oy40ZcLrEQ1g8SZl2avdJvdpPtFEv_Ej9gTywr2ZzWw/edit?usp=sharing";
+
+        // Función para mostrar la imagen de bienvenida y luego redirigir al TP
+        function showWelcomeImageAndRedirectToTP() {
+            imageDisplayArea.style.display = 'flex'; 
+            tpLinkDisplay.style.display = 'none'; 
+
+            createStars(); 
+
+            setTimeout(() => {
+                imageDisplayArea.style.display = 'none'; 
+                tpLinkDisplay.style.display = 'flex'; 
+                tpLink.href = trabajoPracticoURL; 
+            }, 5000); // Duración de la imagen de RRHH: 5 segundos
+        }
+
+        // === Inicialización Global (cuando la página carga) ===
+        window.onload = function() {
+            resizeMatrixCanvas(); 
+            animateMatrix(); 
+
+            contentArea.style.display = 'none'; 
+            imageDisplayArea.style.display = 'none'; 
+            tpLinkDisplay.style.display = 'none'; 
+        };
+
+        window.addEventListener('resize', resizeMatrixCanvas); 
+    </script>
+</body>
+</html>
